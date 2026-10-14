@@ -16,7 +16,7 @@
    ⚙️ 설정 — 설치 가이드 4단계에서 이 두 줄만 바꾸면 됩니다.
    (바꾸기 전에는 '미리보기 모드'로 예시 실험이 보입니다)
    ===================================================================== */
-const SUPABASE_URL      = "https://rbpofwlpfxnsicyoxkao.supabase.co/rest/v1/";       // 예: https://abcdxyz.supabase.co
+const SUPABASE_URL      = "https://rbpofwlpfxnsicyoxkao.supabase.co";       // 예: https://abcdxyz.supabase.co
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJicG9md2xwZnhuc2ljeW94a2FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzMTU4NzgsImV4cCI6MjEwNjg5MTg3OH0.gpVo5qIJ2PelW0TjWQEEKmVglVOH8oSVKe1SPiikkM0";  // anon public 키
 
 const SITE = {
@@ -590,7 +590,16 @@ $("#loginPw").addEventListener("keydown", e=>{ if(e.key==="Enter") login(); });
 async function login(){
   $("#loginErr").textContent="";
   const {error} = await sb.auth.signInWithPassword({email:$("#loginEmail").value.trim(), password:$("#loginPw").value});
-  if (error){ $("#loginErr").textContent="이메일 또는 비밀번호가 맞지 않아요."; return; }
+  if (error){
+    const m = (error.message||"").toLowerCase();
+    let msg = "로그인하지 못했어요: " + error.message;
+    if (m.includes("invalid login credentials")) msg = "이 프로젝트에 그 이메일·비밀번호로 된 계정이 없어요. (Supabase Users 목록과 index.html의 프로젝트 주소가 같은지 확인)";
+    else if (m.includes("email not confirmed")) msg = "계정이 아직 '확인' 전이에요. Supabase Users에서 그 계정을 확인(Confirm) 처리해 주세요.";
+    else if (m.includes("logins are disabled") || m.includes("provider")) msg = "Supabase에서 이메일 로그인이 꺼져 있어요. Sign In / Providers에서 Email을 켜 주세요.";
+    else if (m.includes("fetch") || m.includes("network")) msg = "Supabase에 연결하지 못했어요. index.html의 주소(URL)를 확인해 주세요.";
+    else if (m.includes("api key")) msg = "anon 키가 맞지 않아요. index.html의 키를 다시 복사해 넣어 주세요.";
+    $("#loginErr").textContent = msg; return;
+  }
   $("#loginPw").value=""; $("#loginModal").classList.remove("open"); setAdmin(true); toast("어서 오세요, 선생님! 👋");
 }
 async function setAdmin(on){
