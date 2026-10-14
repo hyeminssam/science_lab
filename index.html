@@ -11,21 +11,20 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- ⚙️ Supabase 주소·키, 학교 이름 등은 config.js 에 따로 들어 있습니다.
+     config.js 는 처음에 한 번만 올리면 되고, index.html 은 새 버전으로 그냥 바꿔 끼우면 됩니다. -->
+<script src="config.js"></script>
 <script>
-/* =====================================================================
-   ⚙️ 설정 — 설치 가이드 4단계에서 이 두 줄만 바꾸면 됩니다.
-   (바꾸기 전에는 '미리보기 모드'로 예시 실험이 보입니다)
-   ===================================================================== */
-const SUPABASE_URL      = "https://rbpofwlpfxnsicyoxkao.supabase.co";       // 예: https://abcdxyz.supabase.co
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJicG9md2xwZnhuc2ljeW94a2FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzMTU4NzgsImV4cCI6MjEwNjg5MTg3OH0.gpVo5qIJ2PelW0TjWQEEKmVglVOH8oSVKe1SPiikkM0";  // anon public 키
-
-const SITE = {
+const CFG = window.LAB_CONFIG || {};
+const SUPABASE_URL      = CFG.supabaseUrl     || "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = CFG.supabaseAnonKey || "YOUR_SUPABASE_ANON_KEY";
+const SITE = Object.assign({
   title:  "혜민쌤의 가상실험실 모음집",
   owner:  "혜민쌤",
   school: "신남중학교",
-  year:   "2026",
-  hello:  "오늘은 어떤 실험 해 볼까? 🔬"   // 캐릭터 말풍선
-};
+  year:   String(new Date().getFullYear()),
+  hello:  "오늘은 어떤 실험 해 볼까? 🔬"
+}, CFG.site || {});
 </script>
 <style>
 :root{
@@ -89,6 +88,11 @@ h1{font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(30px,5vw,48px);l
 .chunky.teal{background:var(--teal);color:#fff}
 .count-pill{font-size:13px;color:var(--muted);font-weight:700}
 .count-pill b{color:var(--navy);font-size:16px}
+
+/* 열림 안내 */
+.open-note{display:flex;gap:10px;align-items:center;margin:0 0 12px;padding:11px 16px;border-radius:16px;background:#fff;border:var(--line);box-shadow:3px 3px 0 var(--ink);font-size:14.5px;line-height:1.55;word-break:keep-all}
+.open-note .ic{flex:none;font-size:22px}
+.open-note b{color:var(--teal)}
 
 /* 미리보기 알림 */
 .demo-note{display:none;margin:0 0 12px;padding:9px 14px;border-radius:12px;font-size:13px;line-height:1.5;
@@ -267,6 +271,11 @@ footer{padding:26px 0 110px}
     </div>
   </header>
 
+  <div class="open-note">
+    <span class="ic">📢</span>
+    <span>모든 가상실험은 <b>모든 반 수업이 다 끝난 뒤에 열려요.</b> 🔒 자물쇠가 걸린 실험은 아직 다른 반이 수업 중이라는 뜻이니 조금만 기다려 주세요!</span>
+  </div>
+
   <div class="demo-note">👀 지금은 <b>미리보기 모드</b>예요. 설치 가이드대로 Supabase를 연결하면 실제 실험 목록이 나타나고, 관리자 모드에서 바꾼 내용이 저장됩니다.</div>
 
   <div class="toolbar">
@@ -306,7 +315,8 @@ footer{padding:26px 0 110px}
 <div class="admin-bar">
   <span class="lamp"></span> 관리자 모드
   <button id="addBtn">＋ 추가</button>
-  <button id="logoutBtn">나가기</button>
+  <button id="exitBtn" title="학생 화면으로 (로그인은 유지)">학생 화면</button>
+  <button id="logoutBtn" title="이 기기에서 완전히 로그아웃">로그아웃</button>
 </div>
 
 <!-- QR 창 -->
@@ -391,7 +401,7 @@ const SAMPLE = [
 
 /* ============================== 상태 ============================== */
 const isDemo = SUPABASE_URL.includes("YOUR_") || SUPABASE_ANON_KEY.includes("YOUR_");
-const sb = (!isDemo && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const sb = (!isDemo && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;  // 로그인 상태는 그 기기에 유지됨
 let labs = [];
 let isAdmin = false;
 let filterUnit = "전체";
@@ -405,6 +415,7 @@ const saveFold = ()=>{ try{ localStorage.setItem("lab_folded", JSON.stringify(fo
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const siteUrl = () => location.origin + location.pathname;
+const safeUrl = u => /^https?:\/\//i.test(String(u||"").trim()) ? String(u).trim() : "";
 const findLab = id => labs.find(x=>String(x.id)===String(id));
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2000)}
 
@@ -473,13 +484,13 @@ function render(){
 }
 
 function tile(l){
-  const open = l.is_open && l.url && l.url.trim();
+  const open = l.is_open && safeUrl(l.url);
   const badges = `${l.grade?`<span class="bd">${esc(l.grade)}</span>`:""}${l.is_new?`<span class="bd new">NEW</span>`:""}${!l.is_open?`<span class="bd lock">🔒 닫힘</span>`:""}${!l.is_visible?`<span class="bd hide">숨김</span>`:""}`;
   const inner = `<div class="lab-icon">${esc(l.emoji||"🧪")}</div>
     <div class="lab-info"><div class="badges">${badges}</div><div class="lab-title">${esc(l.title)}</div>
-    <div class="lab-desc">${open||isAdmin?esc(l.description||""):"선생님이 열어 주면 들어갈 수 있어요"}</div></div>
+    <div class="lab-desc">${open||isAdmin?esc(l.description||""):"모든 반 수업이 끝나면 열려요"}</div></div>
     <div class="lab-go">${open?"▶":"🔒"}</div>`;
-  const main = open ? `<a class="lab-main" href="${esc(l.url)}" target="_blank" rel="noopener">${inner}</a>`
+  const main = open ? `<a class="lab-main" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">${inner}</a>`
                     : `<div class="lab-main">${inner}</div>`;
   return `<article class="lab ${open?"":"locked"} ${l.is_visible?"":"hidden-lab"}" style="--c:${esc(l.color||"#25b5a8")}">
     <div class="lab-row">${main}${open?`<button class="qr-mini" data-qr="${esc(l.id)}" title="QR코드">▦</button>`:""}</div>
@@ -606,9 +617,11 @@ async function setAdmin(on){
   isAdmin = on; document.body.classList.toggle("admin", on);
   await load();
 }
+$("#exitBtn").addEventListener("click", ()=>{ setAdmin(false); toast("학생 화면이에요 (로그인은 유지돼요)"); });
 $("#logoutBtn").addEventListener("click", async ()=>{
+  if (!confirm("이 기기에서 로그아웃할까요?\n다음에 관리자 모드에 들어갈 때 비밀번호를 다시 입력해야 해요.")) return;
   if (sb) await sb.auth.signOut();
-  setAdmin(false); toast("관리자 모드를 나왔어요");
+  setAdmin(false); toast("로그아웃했어요");
 });
 $("#addBtn").addEventListener("click", ()=>openEdit(null, filterUnit==="전체"?"":filterUnit));
 
@@ -707,11 +720,9 @@ async function move(id, dir){
   if (!isDemo) await Promise.all(arr.map(x=>sb.from("labs").update({sort_order:x.sort_order}).eq("id",x.id)));
 }
 
-/* 로그인 상태가 남아 있으면 바로 관리자 모드 */
-(async ()=>{
-  if (sb){ const {data}=await sb.auth.getSession(); if (data.session){ isAdmin=true; document.body.classList.add("admin"); } }
-  load();
-})();
+/* 처음 열면 항상 학생 화면으로 시작.
+   로그인은 유지되므로, 캐릭터 5번 톡톡 하면 비밀번호 없이 바로 관리자 모드로 들어감 */
+load();
 </script>
 </body>
 </html>
