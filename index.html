@@ -313,7 +313,7 @@ footer{padding:26px 0 110px}
 
 <!-- 관리자 바 -->
 <div class="admin-bar">
-  <span class="lamp"></span> 관리자 모드
+  <span class="lamp"></span> 관리자 모드 <span id="adminWho" style="font-weight:600;opacity:.75;font-size:12px"></span>
   <button id="addBtn">＋ 추가</button>
   <button id="exitBtn" title="학생 화면으로 (로그인은 유지)">학생 화면</button>
   <button id="logoutBtn" title="이 기기에서 완전히 로그아웃">로그아웃</button>
@@ -404,6 +404,10 @@ const isDemo = SUPABASE_URL.includes("YOUR_") || SUPABASE_ANON_KEY.includes("YOU
 const sb = (!isDemo && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;  // 로그인 상태는 그 기기에 유지됨
 let labs = [];
 let isAdmin = false;
+let adminEmail = "";
+const rlsMsg = e => /row-level security/i.test(e?.message||"")
+  ? `저장 권한이 없어요. 지금 로그인한 이메일(${adminEmail||"알 수 없음"})이 Supabase SQL에 적은 선생님 이메일과 달라요.`
+  : "저장하지 못했어요: " + (e?.message||"");
 let filterUnit = "전체";
 let editingId = null;
 let pick = {emoji:EMOJIS[0], color:COLORS[0]};
@@ -615,6 +619,7 @@ async function login(){
 }
 async function setAdmin(on){
   isAdmin = on; document.body.classList.toggle("admin", on);
+  if (on && sb){ const {data}=await sb.auth.getUser(); adminEmail = data?.user?.email || ""; $("#adminWho").textContent = adminEmail ? "· "+adminEmail : ""; }
   await load();
 }
 $("#exitBtn").addEventListener("click", ()=>{ setAdmin(false); toast("학생 화면이에요 (로그인은 유지돼요)"); });
@@ -674,7 +679,7 @@ $("#saveBtn").addEventListener("click", async ()=>{
   let res;
   if (editingId) res = await sb.from("labs").update(row).eq("id", editingId);
   else { row.sort_order = nextOrder(); res = await sb.from("labs").insert(row); }
-  if (res.error){ $("#editErr").textContent="저장하지 못했어요: "+res.error.message; return; }
+  if (res.error){ $("#editErr").textContent=rlsMsg(res.error); return; }
   $("#editModal").classList.remove("open"); toast("저장했어요 ✅"); load();
 });
 const nextOrder = () => Math.max(0,...labs.map(l=>l.sort_order||0))+1;
