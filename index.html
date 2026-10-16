@@ -414,6 +414,7 @@ footer{padding:26px 0 110px}
     <div class="field"><label>이메일</label><input id="loginEmail" type="email" autocomplete="username"></div>
     <div class="field"><label>비밀번호</label><input id="loginPw" type="password" autocomplete="current-password"></div>
     <div class="err" id="loginErr"></div>
+    <p class="desc" id="loginProj" style="font-size:12.5px;margin:-4px 0 12px"></p>
     <button class="chunky teal" style="width:100%;justify-content:center" id="loginGo">로그인</button>
   </div>
 </div>
@@ -689,7 +690,10 @@ async function enterAdmin(){
   if (isDemo){ setAdmin(true); toast("미리보기 관리자 모드 (저장되지 않아요)"); return; }
   const {data} = await sb.auth.getSession();
   if (data.session){ setAdmin(true); return; }
-  $("#loginErr").textContent=""; $("#loginModal").classList.add("open"); setTimeout(()=>$("#loginEmail").focus(),100);
+  $("#loginErr").textContent="";
+  const ref = (SUPABASE_URL.match(/https?:\/\/([^.]+)\./)||[])[1] || SUPABASE_URL;
+  $("#loginProj").innerHTML = `🔗 연결된 Supabase 프로젝트: <b>${esc(ref)}</b><br>(Supabase 화면 주소의 project/ 뒤 글자와 같아야 해요)`;
+  $("#loginModal").classList.add("open"); setTimeout(()=>$("#loginEmail").focus(),100);
 }
 $("#loginGo").addEventListener("click", login);
 $("#loginPw").addEventListener("keydown", e=>{ if(e.key==="Enter") login(); });
