@@ -94,6 +94,25 @@ h1{font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(30px,5vw,48px);l
 .open-note .ic{flex:none;font-size:22px}
 .open-note b{color:var(--teal)}
 
+/* 선생님 모드 */
+.teacher-note{display:none;background:#e9fbf8 !important}
+body.teacher .teacher-note{display:flex}
+body.teacher .student-note{display:none}
+.teacher-bar{display:none;position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:40;gap:6px;align-items:center;
+  padding:8px 8px 8px 16px;border-radius:999px;background:var(--teal);color:#fff;border:var(--line);box-shadow:var(--shadow);font-size:14px;font-weight:800;white-space:nowrap}
+body.teacher .teacher-bar{display:flex}
+.teacher-bar button{padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.2);font-weight:800}
+.teacher-bar button:hover{background:rgba(255,255,255,.34)}
+.t-link{font-size:12.5px;font-weight:800;color:var(--muted);padding:4px 10px;border-radius:999px;border:1.5px solid #cfc4c1;background:#fff;margin-left:6px}
+.t-link:hover{color:var(--teal);border-color:var(--teal)}
+.bd.tlock{background:#ffe7a3}
+.lab-secret{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;border-top:2px dashed #e6dcd9;background:#fffaf0;font-size:12.5px}
+.lab-secret .pw{display:inline-flex;align-items:center;gap:6px;font-weight:800}
+.lab-secret code{font-family:Consolas,monospace;font-size:14px;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:1px 8px;letter-spacing:.06em}
+.lab-secret .cp{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:8px;border:1.5px solid var(--ink);background:#fff}
+.lab-secret .tn{color:var(--muted);word-break:keep-all}
+.code-big{font-family:Consolas,monospace;font-size:28px;font-weight:900;letter-spacing:.18em;text-align:center}
+
 /* 미리보기 알림 */
 .demo-note{display:none;margin:0 0 12px;padding:9px 14px;border-radius:12px;font-size:13px;line-height:1.5;
   background:#fff7d6;border:2px dashed #d4a72c;color:#6b4d00}
@@ -125,7 +144,7 @@ body.demo .demo-note{display:block}
 .unit-admin{display:none;gap:6px;margin-left:8px}
 body.admin .unit-admin{display:flex}
 .unit-admin span{font-size:12px;font-weight:800;padding:5px 9px;border-radius:9px;border:2px solid var(--ink);background:var(--cream)}
-.unit-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;padding:14px}
+.unit-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;padding:14px;align-items:start}
 .unit.closed .unit-body{display:none}
 
 /* ---------- 실험 한 칸 ---------- */
@@ -166,6 +185,8 @@ body.admin .lab-admin{display:flex}
 .switch.on .track::after{left:20px}
 .lab-admin .tb{width:30px;height:30px;border-radius:9px;border:2px solid var(--ink);background:#fff;font-size:13px;display:grid;place-items:center}
 .lab-admin .tb.del{color:#c2410c}
+.lab-admin .newtg{height:30px;padding:0 9px;border-radius:9px;border:2px dashed #b9adaa;background:#fff;color:#b9adaa;font-size:11.5px;font-weight:900;letter-spacing:.02em}
+.lab-admin .newtg.on{border:2px solid var(--ink);background:var(--cheek);color:var(--ink)}
 .add-tile{display:none;min-height:70px;border:2.5px dashed var(--ink);border-radius:16px;align-items:center;justify-content:center;gap:8px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.6)}
 body.admin .add-tile{display:flex}
 .add-tile:hover{background:#fff;color:var(--teal)}
@@ -271,9 +292,14 @@ footer{padding:26px 0 110px}
     </div>
   </header>
 
-  <div class="open-note">
+  <div class="open-note student-note">
     <span class="ic">📢</span>
     <span>모든 가상실험은 <b>모든 반 수업이 다 끝난 뒤에 열려요.</b> 🔒 자물쇠가 걸린 실험은 아직 다른 반이 수업 중이라는 뜻이니 조금만 기다려 주세요!</span>
+  </div>
+
+  <div class="open-note teacher-note">
+    <span class="ic">👩‍🏫</span>
+    <span><b>선생님 모드예요.</b> 학생에게 닫힌 실험도 모두 열 수 있고, 🔑 잠금 해제 비밀번호와 메모가 보여요. 화면을 학생에게 띄울 때는 아래 [학생 화면]을 눌러 주세요.</span>
   </div>
 
   <div class="demo-note">👀 지금은 <b>미리보기 모드</b>예요. 설치 가이드대로 Supabase를 연결하면 실제 실험 목록이 나타나고, 관리자 모드에서 바꾼 내용이 저장됩니다.</div>
@@ -307,7 +333,7 @@ footer{padding:26px 0 110px}
         제작자의 허락 없이 복제·수정·배포·게시하거나 상업적으로 이용하는 것을 금지합니다.</p>
       </div>
     </div>
-    <div class="foot-line"><span class="cmark" id="cmark">©</span> <span id="footYear">2026</span> <span id="footTitle">혜민쌤의 가상실험실</span>. All rights reserved.</div>
+    <div class="foot-line"><span class="cmark" id="cmark">©</span> <span id="footYear">2026</span> <span id="footTitle">혜민쌤의 가상실험실</span>. All rights reserved. <button class="t-link" id="teacherBtn">👩‍🏫 선생님용</button></div>
   </div>
 </footer>
 
@@ -315,8 +341,44 @@ footer{padding:26px 0 110px}
 <div class="admin-bar">
   <span class="lamp"></span> 관리자 모드 <span id="adminWho" style="font-weight:600;opacity:.75;font-size:12px"></span>
   <button id="addBtn">＋ 추가</button>
+  <button id="codeBtn" title="선생님 공유 코드 관리">👩‍🏫 공유 코드</button>
   <button id="exitBtn" title="학생 화면으로 (로그인은 유지)">학생 화면</button>
   <button id="logoutBtn" title="이 기기에서 완전히 로그아웃">로그아웃</button>
+</div>
+
+<!-- 선생님 바 -->
+<div class="teacher-bar">
+  👩‍🏫 선생님 모드
+  <button id="tExit" title="학생 화면으로 (코드는 이 기기에 기억)">학생 화면</button>
+  <button id="tForget" title="이 기기에서 공유 코드 지우기">코드 지우기</button>
+</div>
+
+<!-- 선생님 입장 창 -->
+<div class="modal" id="teacherModal">
+  <div class="sheet">
+    <button class="x" data-close>✕</button>
+    <h2>👩‍🏫 선생님 입장</h2>
+    <p class="desc">혜민쌤에게 받은 <b>선생님 공유 코드</b>를 넣어 주세요. 한 번 넣으면 이 기기에 기억돼요.</p>
+    <div class="field"><label>공유 코드</label><input id="tCode" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;letter-spacing:.12em;font-weight:800"></div>
+    <div class="err" id="tErr"></div>
+    <button class="chunky teal" style="width:100%;justify-content:center" id="tGo">들어가기</button>
+  </div>
+</div>
+
+<!-- 공유 코드 관리 창 (관리자) -->
+<div class="modal" id="codeModal">
+  <div class="sheet">
+    <button class="x" data-close>✕</button>
+    <h2>👩‍🏫 선생님 공유 코드</h2>
+    <p class="desc">이 코드를 아는 선생님은 닫힌 실험과 🔑 비밀번호까지 볼 수 있어요. 바꾸면 예전 코드로는 더 이상 들어올 수 없어요.</p>
+    <div class="field"><label>공유 코드 (6글자 이상)</label><input id="cCode" autocomplete="off" spellcheck="false" style="text-transform:uppercase;letter-spacing:.14em;font-weight:900;font-size:20px;text-align:center"></div>
+    <div class="err" id="cErr"></div>
+    <div class="row" style="margin-bottom:8px">
+      <button class="chunky" id="cRandom">🎲 새로 만들기</button>
+      <button class="chunky teal" id="cSave">저장</button>
+    </div>
+    <button class="chunky" style="width:100%;justify-content:center" id="cCopyMsg">📋 선생님께 보낼 안내 복사</button>
+  </div>
 </div>
 
 <!-- QR 창 -->
@@ -370,6 +432,10 @@ footer{padding:26px 0 110px}
         <select id="fGrade"><option>중1</option><option>중2</option><option>중3</option><option>전체</option></select></div>
     </div>
     <div class="field"><label>한 줄 소개</label><textarea id="fDesc" placeholder="학생들이 무엇을 해 볼 수 있는지 적어 주세요."></textarea></div>
+    <div class="two">
+      <div class="field"><label>🔑 잠금 해제 비밀번호 <small style="font-weight:600;color:var(--muted)">(선생님만 보임)</small></label><input id="fPw" autocomplete="off" placeholder="예: 교사 탭 비밀번호"></div>
+      <div class="field"><label>📝 선생님 메모 <small style="font-weight:600;color:var(--muted)">(선생님만 보임)</small></label><input id="fNote" autocomplete="off" placeholder="예: 캐릭터 5번 누르면 교사 모드"></div>
+    </div>
     <div class="field"><label>아이콘</label><div class="emoji-row" id="emojiRow"></div></div>
     <div class="field"><label>색상</label><div class="color-row" id="colorRow"></div></div>
     <div class="check">
@@ -394,7 +460,7 @@ const COLORS = ["#25b5a8","#f6b3b5","#97c8f9","#ffd86b","#c9b6f2","#8fe0b8","#ff
 const SAMPLE = [
   {id:"s1",title:"힘을 화살표로 나타내기",unit:"힘의 작용",grade:"중1",emoji:"🏹",color:"#f6b3b5",description:"물체에 화살표를 그리면 그대로 움직여요! 작용점·방향·크기의 의미를 발견해 봐요.",url:"https://example.github.io/force-arrow/",is_open:true,is_visible:true,is_new:false,sort_order:1},
   {id:"s2",title:"나란한 두 힘의 평형",unit:"힘의 작용",grade:"중1",emoji:"⚖️",color:"#8fe0b8",description:"두 힘의 크기와 방향을 바꿔 보며 물체가 움직이지 않는 조건을 찾아봐요.",url:"https://example.github.io/force-balance/",is_open:true,is_visible:true,is_new:false,sort_order:2},
-  {id:"s3",title:"물체를 잡아당기는 힘, 중력",unit:"힘의 작용",grade:"중1",emoji:"🍎",color:"#ffd86b",description:"행성마다 달라지는 중력을 체험하고, 무게와 질량의 차이를 알아봐요.",url:"https://example.github.io/gravity/",is_open:false,is_visible:true,is_new:true,sort_order:3},
+  {id:"s3",title:"물체를 잡아당기는 힘, 중력",unit:"힘의 작용",grade:"중1",emoji:"🍎",color:"#ffd86b",description:"행성마다 달라지는 중력을 체험하고, 무게와 질량의 차이를 알아봐요.",url:"https://example.github.io/gravity/",unlock_pw:"0000",teacher_note:"제목 5번 누르면 교사 탭 열기",is_open:false,is_visible:true,is_new:true,sort_order:3},
   {id:"s4",title:"천체의 일주 운동",unit:"태양계",grade:"중1",emoji:"🌏",color:"#97c8f9",description:"지구를 돌려 보며 우리나라 하늘에서 별과 태양이 어느 방향으로 움직이는지 확인해요.",url:"https://example.github.io/diurnal/",is_open:true,is_visible:true,is_new:false,sort_order:4},
   {id:"s5",title:"지구의 공전과 별자리 변화",unit:"태양계",grade:"중1",emoji:"🌌",color:"#c9b6f2",description:"계절마다 밤하늘에 보이는 별자리가 왜 달라지는지 지구 밖과 안에서 함께 살펴봐요.",url:"https://example.github.io/revolution/",is_open:false,is_visible:true,is_new:false,sort_order:5}
 ];
@@ -404,6 +470,12 @@ const isDemo = SUPABASE_URL.includes("YOUR_") || SUPABASE_ANON_KEY.includes("YOU
 const sb = (!isDemo && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;  // 로그인 상태는 그 기기에 유지됨
 let labs = [];
 let isAdmin = false;
+let isTeacher = false;
+let demoTeacherCode = "DEMO12";      // 미리보기 모드에서만 쓰는 공유 코드
+const TKEY = "lab_teacher_code";
+const getTCode = () => { try{ return localStorage.getItem(TKEY)||""; }catch(e){ return ""; } };
+const setTCode = v => { try{ v ? localStorage.setItem(TKEY, v) : localStorage.removeItem(TKEY); }catch(e){} };
+const privileged = () => isAdmin || isTeacher;
 let adminEmail = "";
 const rlsMsg = e => /row-level security/i.test(e?.message||"")
   ? `저장 권한이 없어요. 지금 로그인한 이메일(${adminEmail||"알 수 없음"})이 Supabase SQL에 적은 선생님 이메일과 달라요.`
@@ -435,9 +507,18 @@ if (isDemo) document.body.classList.add("demo");
 
 async function load(){
   if (isDemo){ if(!labs.length) labs = SAMPLE.map(x=>({...x})); render(); return; }
-  // 학생: 닫힌 실험의 링크는 서버에서 비워서 보내 주는 labs_public 사용 / 선생님: 원본 labs
-  const src = isAdmin ? "labs" : "labs_public";
-  const {data, error} = await sb.from(src).select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true});
+  // 학생: labs_public (닫힌 실험 링크·비밀번호 없음) / 선생님: 공유 코드로 teacher_labs / 관리자: 원본 labs
+  let data, error;
+  if (isAdmin) ({data, error} = await sb.from("labs").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true}));
+  else if (isTeacher){
+    ({data, error} = await sb.rpc("teacher_labs", {code:getTCode()}));
+    if (error){
+      isTeacher=false; document.body.classList.remove("teacher");
+      if (/wrong_teacher_code/.test(error.message||"")){ setTCode(""); toast("공유 코드가 바뀌었어요. 새 코드를 넣어 주세요"); }
+      return load();
+    }
+  }
+  else ({data, error} = await sb.from("labs_public").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:true}));
   if (error){ $("#units").innerHTML = `<div class="empty"><img src="${CHAR_IMG}" alt="">실험 목록을 불러오지 못했어요. 잠시 후 새로고침해 주세요.</div>`; return; }
   labs = data || [];
   render();
@@ -488,8 +569,13 @@ function render(){
 }
 
 function tile(l){
-  const open = l.is_open && safeUrl(l.url);
-  const badges = `${l.grade?`<span class="bd">${esc(l.grade)}</span>`:""}${l.is_new?`<span class="bd new">NEW</span>`:""}${!l.is_open?`<span class="bd lock">🔒 닫힘</span>`:""}${!l.is_visible?`<span class="bd hide">숨김</span>`:""}`;
+  const open = (privileged() || l.is_open) && safeUrl(l.url);
+  const lockBadge = !l.is_open ? (privileged() ? `<span class="bd tlock">🔒 학생에겐 닫힘</span>` : `<span class="bd lock">🔒 닫힘</span>`) : "";
+  const badges = `${l.grade?`<span class="bd">${esc(l.grade)}</span>`:""}${l.is_new?`<span class="bd new">NEW</span>`:""}${lockBadge}${!l.is_visible?`<span class="bd hide">숨김</span>`:""}`;
+  const secret = privileged() && (l.unlock_pw || l.teacher_note) ? `<div class="lab-secret">
+      ${l.unlock_pw?`<span class="pw">🔑 잠금 해제 비밀번호 <code>${esc(l.unlock_pw)}</code><button class="cp" data-copy="${esc(l.unlock_pw)}">복사</button></span>`:""}
+      ${l.teacher_note?`<span class="tn">📝 ${esc(l.teacher_note)}</span>`:""}
+    </div>` : "";
   const inner = `<div class="lab-icon">${esc(l.emoji||"🧪")}</div>
     <div class="lab-info"><div class="badges">${badges}</div><div class="lab-title">${esc(l.title)}</div>
     <div class="lab-desc">${open||isAdmin?esc(l.description||""):"모든 반 수업이 끝나면 열려요"}</div></div>
@@ -498,8 +584,10 @@ function tile(l){
                     : `<div class="lab-main">${inner}</div>`;
   return `<article class="lab ${open?"":"locked"} ${l.is_visible?"":"hidden-lab"}" style="--c:${esc(l.color||"#25b5a8")}">
     <div class="lab-row">${main}${open?`<button class="qr-mini" data-qr="${esc(l.id)}" title="QR코드">▦</button>`:""}</div>
+    ${secret}
     <div class="lab-admin">
       <button class="switch ${l.is_open?"on":""}" data-act="open" data-id="${esc(l.id)}"><span class="track"></span>${l.is_open?"열림":"닫힘"}</button>
+      <button class="newtg ${l.is_new?"on":""}" data-act="new" data-id="${esc(l.id)}" title="NEW 표시 켜기/끄기">NEW</button>
       <button class="tb" data-act="up" data-id="${esc(l.id)}" title="앞으로">▲</button>
       <button class="tb" data-act="down" data-id="${esc(l.id)}" title="뒤로">▼</button>
       <button class="tb" data-act="visible" data-id="${esc(l.id)}" title="${l.is_visible?"목록에서 숨기기":"목록에 보이기"}">${l.is_visible?"🙈":"👀"}</button>
@@ -523,6 +611,8 @@ $("#units").addEventListener("click", e=>{
   if (uo||uc){ e.stopPropagation(); setUnitOpen((uo||uc).dataset[uo?"unitopen":"unitclose"], !!uo); return; }
   const f = e.target.closest("[data-fold]");
   if (f){ const u=f.dataset.fold; folded[u]=!folded[u]; saveFold(); render(); return; }
+  const cp = e.target.closest("[data-copy]");
+  if (cp){ copyText(cp.dataset.copy, "비밀번호를 복사했어요"); return; }
   const qb = e.target.closest("[data-qr]");
   if (qb){ const l=findLab(qb.dataset.qr); openQr(l.title, l.url); return; }
   const ad = e.target.closest("[data-addunit]");
@@ -531,6 +621,7 @@ $("#units").addEventListener("click", e=>{
   const id = ab.dataset.id, act = ab.dataset.act;
   if (act==="open") setField(id, "is_open");
   if (act==="visible") setField(id, "is_visible");
+  if (act==="new") setField(id, "is_new");
   if (act==="edit") openEdit(id);
   if (act==="del") removeLab(id);
   if (act==="up"||act==="down") move(id, act==="up"?-1:1);
@@ -618,6 +709,7 @@ async function login(){
   $("#loginPw").value=""; $("#loginModal").classList.remove("open"); setAdmin(true); toast("어서 오세요, 선생님! 👋");
 }
 async function setAdmin(on){
+  if (on && isTeacher){ isTeacher=false; document.body.classList.remove("teacher"); }
   isAdmin = on; document.body.classList.toggle("admin", on);
   if (on && sb){ const {data}=await sb.auth.getUser(); adminEmail = data?.user?.email || ""; $("#adminWho").textContent = adminEmail ? "· "+adminEmail : ""; }
   await load();
@@ -629,6 +721,91 @@ $("#logoutBtn").addEventListener("click", async ()=>{
   setAdmin(false); toast("로그아웃했어요");
 });
 $("#addBtn").addEventListener("click", ()=>openEdit(null, filterUnit==="전체"?"":filterUnit));
+
+/* ============================== 선생님 모드 ============================== */
+async function copyText(t, msg){
+  try{ await navigator.clipboard.writeText(t); toast(msg||"복사했어요"); }
+  catch{ prompt("아래 내용을 복사하세요", t); }
+}
+function setTeacher(on){
+  isTeacher = on; document.body.classList.toggle("teacher", on);
+  render();
+}
+async function tryTeacher(code){
+  code = String(code||"").trim().toUpperCase();
+  if (code.length < 6) return "6글자 이상인 공유 코드를 넣어 주세요.";
+  if (isDemo){
+    if (code !== demoTeacherCode) return `코드가 맞지 않아요. (미리보기 코드: ${demoTeacherCode})`;
+  } else {
+    const {error} = await sb.rpc("teacher_labs", {code});
+    if (error) return /wrong_teacher_code/.test(error.message||"") ? "공유 코드가 맞지 않아요. 혜민쌤께 확인해 주세요." : "연결하지 못했어요: "+error.message;
+  }
+  setTCode(code);
+  if (isAdmin){ isAdmin=false; document.body.classList.remove("admin"); }
+  isTeacher = true; document.body.classList.add("teacher");
+  await load();
+  return "";
+}
+$("#teacherBtn").addEventListener("click", async ()=>{
+  if (isTeacher) return;
+  const saved = getTCode();
+  if (saved && !(await tryTeacher(saved))){ toast("선생님 모드예요 👩‍🏫"); return; }
+  $("#tErr").textContent=""; $("#tCode").value=""; $("#teacherModal").classList.add("open"); setTimeout(()=>$("#tCode").focus(),100);
+});
+async function teacherGo(){
+  const err = await tryTeacher($("#tCode").value);
+  if (err){ $("#tErr").textContent = err; return; }
+  $("#teacherModal").classList.remove("open"); toast("어서 오세요, 선생님! 👩‍🏫");
+}
+$("#tGo").addEventListener("click", teacherGo);
+$("#tCode").addEventListener("keydown", e=>{ if (e.key==="Enter") teacherGo(); });
+$("#tExit").addEventListener("click", async ()=>{ setTeacher(false); await load(); toast("학생 화면이에요 (코드는 기억해 둘게요)"); });
+$("#tForget").addEventListener("click", async ()=>{
+  if (!confirm("이 기기에서 선생님 공유 코드를 지울까요?\n다음에 들어올 때 코드를 다시 넣어야 해요.")) return;
+  setTCode(""); setTeacher(false); await load(); toast("코드를 지웠어요");
+});
+
+/* 공유 코드 관리 (관리자) */
+const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // 헷갈리는 0/O, 1/I 제외
+function randomCode(n=8){
+  const a = new Uint32Array(n); crypto.getRandomValues(a);
+  return Array.from(a, x=>CODE_CHARS[x % CODE_CHARS.length]).join("");
+}
+$("#codeBtn").addEventListener("click", async ()=>{
+  $("#cErr").textContent="";
+  let cur = "";
+  if (isDemo) cur = demoTeacherCode;
+  else {
+    const {data, error} = await sb.from("lab_settings").select("teacher_code").eq("id",1).maybeSingle();
+    if (error){ toast("코드를 불러오지 못했어요: "+error.message); return; }
+    cur = data?.teacher_code || "";
+  }
+  $("#cCode").value = cur;
+  if (!cur) $("#cErr").textContent = "아직 공유 코드가 없어요. [🎲 새로 만들기]를 누르고 저장하세요.";
+  $("#codeModal").classList.add("open");
+});
+$("#cRandom").addEventListener("click", ()=>{ $("#cCode").value = randomCode(); $("#cErr").textContent="저장을 눌러야 바뀌어요."; });
+$("#cSave").addEventListener("click", async ()=>{
+  const code = $("#cCode").value.trim().toUpperCase();
+  if (code.length < 6){ $("#cErr").textContent="6글자 이상으로 정해 주세요."; return; }
+  if (/\s/.test(code)){ $("#cErr").textContent="띄어쓰기 없이 정해 주세요."; return; }
+  if (isDemo){ demoTeacherCode = code; }
+  else {
+    const {error} = await sb.from("lab_settings").upsert({id:1, teacher_code:code});
+    if (error){ $("#cErr").textContent = rlsMsg(error); return; }
+  }
+  $("#cCode").value = code; $("#cErr").textContent=""; toast("공유 코드를 저장했어요 ✅");
+});
+$("#cCopyMsg").addEventListener("click", ()=>{
+  const code = $("#cCode").value.trim().toUpperCase();
+  if (code.length < 6){ $("#cErr").textContent="먼저 공유 코드를 만들어 저장해 주세요."; return; }
+  copyText(`[${SITE.title} — 선생님용 안내]
+주소: ${siteUrl()}
+1) 사이트 맨 아래 [👩‍🏫 선생님용] 버튼을 누르세요.
+2) 공유 코드 ${code} 를 넣으면 닫힌 실험과 잠금 해제 비밀번호까지 볼 수 있어요.
+※ 공유 코드와 비밀번호는 학생에게 알려 주지 마시고, 수업 화면을 띄울 때는 [학생 화면]을 눌러 주세요.
+※ ${SITE.school} 수업용 자료입니다. 다른 학교로 공유하지 말아 주세요.`, "안내 문구를 복사했어요");
+});
 
 /* ============================== 편집 ============================== */
 function drawPickers(){
@@ -650,6 +827,8 @@ function openEdit(id, unit){
   $("#fOpen").checked    = l ? !!l.is_open : false;   // 새로 올리면 기본은 '닫힘'
   $("#fVisible").checked = l ? !!l.is_visible : true;
   $("#fNew").checked     = l ? !!l.is_new : true;
+  $("#fPw").value   = l?.unlock_pw || "";
+  $("#fNote").value = l?.teacher_note || "";
   pick = {emoji:l?.emoji||EMOJIS[0], color:l?.color||COLORS[0]};
   if (pick.emoji && !EMOJIS.includes(pick.emoji)) EMOJIS.unshift(pick.emoji);
   drawPickers();
@@ -665,7 +844,8 @@ $("#saveBtn").addEventListener("click", async ()=>{
     grade: $("#fGrade").value,
     description: $("#fDesc").value.trim(),
     emoji: pick.emoji, color: pick.color,
-    is_open: $("#fOpen").checked, is_visible: $("#fVisible").checked, is_new: $("#fNew").checked
+    is_open: $("#fOpen").checked, is_visible: $("#fVisible").checked, is_new: $("#fNew").checked,
+    unlock_pw: $("#fPw").value.trim(), teacher_note: $("#fNote").value.trim()
   };
   if (!row.title){ $("#editErr").textContent="실험 이름을 적어 주세요."; return; }
   if (row.url && !/^https?:\/\//i.test(row.url)){ $("#editErr").textContent="링크는 https:// 로 시작해야 해요."; return; }
@@ -687,7 +867,9 @@ const nextOrder = () => Math.max(0,...labs.map(l=>l.sort_order||0))+1;
 async function setField(id, field){
   const l = findLab(id); const v = !l[field];
   if (field==="is_open" && v && !(l.url&&l.url.trim())){ toast("먼저 ✏️에서 실험 링크를 넣어 주세요"); return; }
-  const msg = field==="is_open" ? (v?"🔓 학생이 들어갈 수 있어요":"🔒 닫았어요") : (v?"목록에 보여요":"목록에서 숨겼어요");
+  const msg = field==="is_open" ? (v?"🔓 학생이 들어갈 수 있어요":"🔒 닫았어요")
+            : field==="is_new" ? (v?"✨ NEW 표시를 켰어요":"NEW 표시를 껐어요")
+            : (v?"목록에 보여요":"목록에서 숨겼어요");
   if (isDemo){ l[field]=v; render(); toast(msg); return; }
   l[field]=v; render();
   const {error} = await sb.from("labs").update({[field]:v}).eq("id", id);
