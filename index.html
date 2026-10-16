@@ -299,7 +299,7 @@ footer{padding:26px 0 110px}
 
   <div class="open-note teacher-note">
     <span class="ic">👩‍🏫</span>
-    <span><b>선생님 모드예요.</b> 학생에게 닫힌 실험도 모두 열 수 있고, 🔑 잠금 해제 비밀번호와 메모가 보여요. 화면을 학생에게 띄울 때는 아래 [학생 화면]을 눌러 주세요.</span>
+    <span><b>선생님 모드예요.</b> 학생에게 닫힌 실험도 모두 열 수 있고, 🔑 비밀번호와 📝 선생님 메모가 보여요. (🔑 비밀번호는 실험이 열리면 학생에게도 보여요) 화면을 학생에게 띄울 때는 아래 [학생 화면]을 눌러 주세요.</span>
   </div>
 
   <div class="demo-note">👀 지금은 <b>미리보기 모드</b>예요. 설치 가이드대로 Supabase를 연결하면 실제 실험 목록이 나타나고, 관리자 모드에서 바꾼 내용이 저장됩니다.</div>
@@ -370,7 +370,7 @@ footer{padding:26px 0 110px}
   <div class="sheet">
     <button class="x" data-close>✕</button>
     <h2>👩‍🏫 선생님 공유 코드</h2>
-    <p class="desc">이 코드를 아는 선생님은 닫힌 실험과 🔑 비밀번호까지 볼 수 있어요. 바꾸면 예전 코드로는 더 이상 들어올 수 없어요.</p>
+    <p class="desc">이 코드를 아는 선생님은 닫힌 실험과 그 🔑 비밀번호, 📝 메모까지 볼 수 있어요. 바꾸면 예전 코드로는 더 이상 들어올 수 없어요.</p>
     <div class="field"><label>공유 코드 (6글자 이상)</label><input id="cCode" autocomplete="off" spellcheck="false" style="text-transform:uppercase;letter-spacing:.14em;font-weight:900;font-size:20px;text-align:center"></div>
     <div class="err" id="cErr"></div>
     <div class="row" style="margin-bottom:8px">
@@ -434,7 +434,7 @@ footer{padding:26px 0 110px}
     </div>
     <div class="field"><label>한 줄 소개</label><textarea id="fDesc" placeholder="학생들이 무엇을 해 볼 수 있는지 적어 주세요."></textarea></div>
     <div class="two">
-      <div class="field"><label>🔑 잠금 해제 비밀번호 <small style="font-weight:600;color:var(--muted)">(선생님만 보임)</small></label><input id="fPw" autocomplete="off" placeholder="예: 교사 탭 비밀번호"></div>
+      <div class="field"><label>🔑 잠금 해제 비밀번호 <small style="font-weight:600;color:var(--muted)">(열리면 학생에게도 보임)</small></label><input id="fPw" autocomplete="off" placeholder="예: 교사 탭 비밀번호"></div>
       <div class="field"><label>📝 선생님 메모 <small style="font-weight:600;color:var(--muted)">(선생님만 보임)</small></label><input id="fNote" autocomplete="off" placeholder="예: 캐릭터 5번 누르면 교사 모드"></div>
     </div>
     <div class="field"><label>아이콘</label><div class="emoji-row" id="emojiRow"></div></div>
@@ -459,7 +459,7 @@ const COLORS = ["#25b5a8","#f6b3b5","#97c8f9","#ffd86b","#c9b6f2","#8fe0b8","#ff
 
 /* 미리보기 모드에서 보이는 예시(실제 데이터는 Supabase에 저장됩니다) */
 const SAMPLE = [
-  {id:"s1",title:"힘을 화살표로 나타내기",unit:"힘의 작용",grade:"중1",emoji:"🏹",color:"#f6b3b5",description:"물체에 화살표를 그리면 그대로 움직여요! 작용점·방향·크기의 의미를 발견해 봐요.",url:"https://example.github.io/force-arrow/",is_open:true,is_visible:true,is_new:false,sort_order:1},
+  {id:"s1",unlock_pw:"1111",title:"힘을 화살표로 나타내기",unit:"힘의 작용",grade:"중1",emoji:"🏹",color:"#f6b3b5",description:"물체에 화살표를 그리면 그대로 움직여요! 작용점·방향·크기의 의미를 발견해 봐요.",url:"https://example.github.io/force-arrow/",is_open:true,is_visible:true,is_new:false,sort_order:1},
   {id:"s2",title:"나란한 두 힘의 평형",unit:"힘의 작용",grade:"중1",emoji:"⚖️",color:"#8fe0b8",description:"두 힘의 크기와 방향을 바꿔 보며 물체가 움직이지 않는 조건을 찾아봐요.",url:"https://example.github.io/force-balance/",is_open:true,is_visible:true,is_new:false,sort_order:2},
   {id:"s3",title:"물체를 잡아당기는 힘, 중력",unit:"힘의 작용",grade:"중1",emoji:"🍎",color:"#ffd86b",description:"행성마다 달라지는 중력을 체험하고, 무게와 질량의 차이를 알아봐요.",url:"https://example.github.io/gravity/",unlock_pw:"0000",teacher_note:"제목 5번 누르면 교사 탭 열기",is_open:false,is_visible:true,is_new:true,sort_order:3},
   {id:"s4",title:"천체의 일주 운동",unit:"태양계",grade:"중1",emoji:"🌏",color:"#97c8f9",description:"지구를 돌려 보며 우리나라 하늘에서 별과 태양이 어느 방향으로 움직이는지 확인해요.",url:"https://example.github.io/diurnal/",is_open:true,is_visible:true,is_new:false,sort_order:4},
@@ -573,9 +573,12 @@ function tile(l){
   const open = (privileged() || l.is_open) && safeUrl(l.url);
   const lockBadge = !l.is_open ? (privileged() ? `<span class="bd tlock">🔒 학생에겐 닫힘</span>` : `<span class="bd lock">🔒 닫힘</span>`) : "";
   const badges = `${l.grade?`<span class="bd">${esc(l.grade)}</span>`:""}${l.is_new?`<span class="bd new">NEW</span>`:""}${lockBadge}${!l.is_visible?`<span class="bd hide">숨김</span>`:""}`;
-  const secret = privileged() && (l.unlock_pw || l.teacher_note) ? `<div class="lab-secret">
-      ${l.unlock_pw?`<span class="pw">🔑 잠금 해제 비밀번호 <code>${esc(l.unlock_pw)}</code><button class="cp" data-copy="${esc(l.unlock_pw)}">복사</button></span>`:""}
-      ${l.teacher_note?`<span class="tn">📝 ${esc(l.teacher_note)}</span>`:""}
+  // 🔑 비밀번호: 선생님·관리자는 항상, 학생은 열린 실험만 (닫힌 실험은 서버가 아예 안 보내 줌)
+  const showPw   = l.unlock_pw && (privileged() || open);
+  const showNote = privileged() && l.teacher_note;
+  const secret = (showPw || showNote) ? `<div class="lab-secret">
+      ${showPw?`<span class="pw">🔑 비밀번호 <code>${esc(l.unlock_pw)}</code><button class="cp" data-copy="${esc(l.unlock_pw)}">복사</button></span>`:""}
+      ${showNote?`<span class="tn">📝 ${esc(l.teacher_note)}</span>`:""}
     </div>` : "";
   const inner = `<div class="lab-icon">${esc(l.emoji||"🧪")}</div>
     <div class="lab-info"><div class="badges">${badges}</div><div class="lab-title">${esc(l.title)}</div>
@@ -806,8 +809,8 @@ $("#cCopyMsg").addEventListener("click", ()=>{
   copyText(`[${SITE.title} — 선생님용 안내]
 주소: ${siteUrl()}
 1) 사이트 맨 아래 [👩‍🏫 선생님용] 버튼을 누르세요.
-2) 공유 코드 ${code} 를 넣으면 닫힌 실험과 잠금 해제 비밀번호까지 볼 수 있어요.
-※ 공유 코드와 비밀번호는 학생에게 알려 주지 마시고, 수업 화면을 띄울 때는 [학생 화면]을 눌러 주세요.
+2) 공유 코드 ${code} 를 넣으면 아직 닫힌 실험과 그 비밀번호까지 볼 수 있어요.
+※ 공유 코드는 학생에게 알려 주지 마시고, 수업 화면을 띄울 때는 [학생 화면]을 눌러 주세요.
 ※ ${SITE.school} 수업용 자료입니다. 다른 학교로 공유하지 말아 주세요.`, "안내 문구를 복사했어요");
 });
 
